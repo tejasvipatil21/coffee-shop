@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coffee Shop</title>
+</head>
+<body>
+    <h1>Coffee Menu</h1>
+
+    <ul id="coffeeList"></ul>
+
+    <h2>Add Coffee</h2>
+    <input id="name" placeholder="Coffee name">
+    <input id="price" placeholder="Price">
+    <button onclick="addCoffee()">Add</button>
+
+    <script>
+        const API = "http://localhost:3000/coffees";
+
+        async function loadCoffees() {
+            const res = await fetch(API);
+            const data = await res.json();
+
+            const list = document.getElementById("coffeeList");
+            list.innerHTML = "";
+
+            data.forEach(c => {
+                const li = document.createElement("li");
+                li.textContent = `${c.name} - ₹${c.price}`;
+                list.appendChild(li);
+            });
+        }
+
+        async function addCoffee() {
+            const name = document.getElementById("name").value;
+            const price = document.getElementById("price").value;
+
+            await fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, price })
+            });
+
+            loadCoffees();
+        }
+
+        loadCoffees();
+    </script>
+</body>
+</html>
